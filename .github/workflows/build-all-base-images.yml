@@ -1,0 +1,25 @@
+name: build and push vanila sapig image to aws ecr
+run-name: Building sapig:'${{ inputs.release_version_number }}' 
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version_number:
+        required: true
+        type: string
+      release_ref:
+        required: true
+        type: string
+      java_version:
+        required: false
+        type: string
+        default: '17'
+
+jobs:
+  
+  build_image_sapig:
+    name: Build and deploy sapig
+    uses: ./.github/workflows/build-and-push-sapig-to-aws.yml
+    with:
+      release_version_number: ${{ inputs.release_version_number }}
+      release_ref: ${{ inputs.release_version_number }}

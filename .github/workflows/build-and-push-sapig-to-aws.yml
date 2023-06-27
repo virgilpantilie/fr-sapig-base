@@ -1,0 +1,81 @@
+name: build and push vanila sapig image to aws ecr
+run-name: Building sapig:'${{ inputs.release_version_number }}' 
+
+on:
+  workflow_call:
+    inputs:
+      release_version_number:
+        required: true
+        type: string
+      release_ref:
+        required: true
+        type: string
+      java_version:
+        required: false
+        type: string
+        default: '17'
+  workflow_dispatch:
+    inputs:
+      release_version_number:
+        required: true
+        type: string
+      release_ref:
+        required: true
+        type: string
+      java_version:
+        required: false
+        type: string
+        default: '17'
+
+jobs:
+  
+  build_image:
+    name: Build and deploy container image
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+
+      # https://github.com/actions/checkout
+      - name: checkout release tag
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.release_ref }}
+
+      - name: Prepare JDK and Maven for build
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt' #adoptopenjdk
+          java-version: ${{ inputs.java_version }}
+          architecture: x64
+          cache: 'maven'  
+
+      # Java version and maven settings with protected repository id
+      
+      - name: Pulling and configuring forgerock maven settings
+        run: | 
+          curl -u '${{ secrets.FORGEROCK_USER }}:${{ secrets.FORGEROCK_PASSWORD }}' https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml
+          
+          cat << EOF > security-settings.xml
+          ${{ secrets.SECURITY_SETTINGS }}
+          EOF
+          
+        
+      - name: Building Jar
+        run: mvn clean install -s settings.xml -Dsettings.security=security-settings.xml
+          
+      - name: Login to registry
+        run: | 
+          export AWS_ACCESS_KEY_ID=${{ secrets.ECR_CREDENTIALS_ACCESS_KEY }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.ECR_CREDENTIALS_SECRET_KEY }}
+          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+      
+      - name: Setting build configuration for the image
+        run: bin/config.sh --env dev --igmode development init  # Add variables here
+    
+      - name: Building and pushing Container Image
+        run: |
+          export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
+          docker build docker/7.1.0/ig/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:${GIT_SHA_SHORT}
+          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:latest 
+          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway
