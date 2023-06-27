@@ -22,5 +22,5 @@ jobs:
     uses: ./.github/workflows/build-and-push-sapig-to-aws.yml
     with:
       release_version_number: ${{ inputs.release_version_number }}
-      release_ref: ${{ inputs.release_ref }}]
+      release_ref: ${{ inputs.release_ref }}
     secrets: inherit
