@@ -1,5 +1,5 @@
 name: Build all base forgerock secure gateway components
-run-name: Building sapig:'${{ inputs.release_version_number }}' 
+run-name: Building a full release of sapig:'${{ inputs.release_version_number }}' 
 
 on:
   workflow_dispatch:
