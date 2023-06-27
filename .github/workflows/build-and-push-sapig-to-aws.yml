@@ -40,7 +40,7 @@ jobs:
       # https://github.com/actions/checkout
       - name: checkout release tag
         uses: actions/checkout@v3
-        with:
+       with:
           repository: SecureApiGateway/secure-api-gateway-ob-uk
           ref: ${{ inputs.release_ref }}
 
@@ -56,15 +56,10 @@ jobs:
       
       - name: Pulling and configuring forgerock maven settings
         run: | 
-          curl -u '${{ secrets.FORGEROCK_USER }}:${{ secrets.FORGEROCK_PASSWORD }}' https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml
-          
-          cat << EOF > security-settings.xml
-          ${{ secrets.SECURITY_SETTINGS }}
-          EOF
-          
+          curl -u '${{ secrets.FORGEROCK_USER }}:${{ secrets.FORGEROCK_PASSWORD }}' https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml  
         
       - name: Building Jar
-        run: mvn clean install -s settings.xml -Dsettings.security=security-settings.xml
+        run: mvn clean install -s settings.xml 
           
       - name: Login to registry
         run: | 
@@ -81,3 +76,7 @@ jobs:
           docker build docker/7.1.0/ig/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:${GIT_SHA_SHORT}
           docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway:latest 
           docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/secure-api-gateway
+
+# cat << EOF > security-settings.xml
+# ${{ secrets.SECURITY_SETTINGS }}
+# EOF -Dsettings.security=security-settings.xml
