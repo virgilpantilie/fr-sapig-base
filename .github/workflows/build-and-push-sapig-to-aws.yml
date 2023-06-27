@@ -41,7 +41,8 @@ jobs:
       - name: checkout release tag
         uses: actions/checkout@v3
         with:
-          ref: SecureApiGateway/secure-api-gateway-ob-uk@${{ inputs.release_ref }}
+          name: SecureApiGateway/secure-api-gateway-ob-uk
+          ref: ${{ inputs.release_ref }}
 
       - name: Prepare JDK and Maven for build
         uses: actions/setup-java@v3
