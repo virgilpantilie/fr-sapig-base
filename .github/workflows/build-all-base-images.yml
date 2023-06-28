@@ -14,6 +14,9 @@ on:
         required: false
         type: string
         default: '17'
+      repository_url:
+        required: true
+        type: string
 
 jobs:
   
@@ -21,6 +24,20 @@ jobs:
     name: Build and deploy sapig
     uses: ./.github/workflows/build-and-push-sapig-to-aws.yml
     with:
+      repository_url: 'SecureApiGateway/secure-api-gateway-ob-uk'
       release_version_number: ${{ inputs.release_version_number }}
       release_ref: ${{ inputs.release_ref }}
     secrets: inherit
+
+
+  build_image_rcs:
+      name: Build and deploy sapig
+      uses: ./.github/workflows/build-and-push-rcs-to-aws.yml
+      with:
+        repository_url: 'SecureApiGateway/secure-api-gateway-ob-uk-rcs'
+        release_version_number: ${{ inputs.release_version_number }}
+        release_ref: ${{ inputs.release_ref }}
+      secrets: inherit
+
+
+  

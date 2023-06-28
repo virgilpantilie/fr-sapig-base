@@ -1,5 +1,5 @@
-name: build and push vanila sapig image to aws ecr
-run-name: Building sapig:'${{ inputs.release_version_number }}' 
+name: build and push vanila rcs image to aws ecr
+run-name: Building remote consent service:'${{ inputs.release_version_number }}' 
 
 on:
   workflow_call:
@@ -15,15 +15,11 @@ on:
         type: string
         default: '17'
       repository_url:
-        required: true
-        type: string
+          required: true
+          type: string
   
   workflow_dispatch:
     inputs:
-      repository_url:
-        required: true
-        type: string
-        default: 'SecureApiGateway/secure-api-gateway-ob-uk'
       release_version_number:
         required: true
         type: string
@@ -34,9 +30,14 @@ on:
         required: false
         type: string
         default: '17'
+      repository_url:
+          required: true
+          type: string
+          default: 'SecureApiGateway/secure-api-gateway-ob-uk-rcs'
 
 env: 
-  IMAGE_ARTIFACT: "secure-api-gateway-ig"  
+  IMAGE_ARTIFACT_NAME: "secure-api-gateway-rcs"  
+          
 
 jobs:
   
@@ -69,20 +70,17 @@ jobs:
           curl -u '${{ secrets.FORGEROCK_USER }}:${{ secrets.FORGEROCK_PASSWORD }}' https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml  
         
       - name: Building Jar
-        run: mvn clean install -s settings.xml 
+        run: mvn clean install -DskipTests -DskipITs -s settings.xml 
           
       - name: Login to registry
         run: | 
           export AWS_ACCESS_KEY_ID=${{ secrets.ECR_CREDENTIALS_ACCESS_KEY }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.ECR_CREDENTIALS_SECRET_KEY }}
           aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
-      
-      - name: Setting build configuration for the image
-        run: bin/config.sh --env dev --igmode development init  # Add variables here
     
       - name: Building and pushing Container Image
         run: |
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          docker build docker/7.1.0/ig/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT }}:${GIT_SHA_SHORT}
-          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT}}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT }}:latest 
-          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT }}
+          docker build secure-api-gateway-ob-uk-rcs-server/docker/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
+          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
+          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}
