@@ -81,6 +81,6 @@ jobs:
       - name: Building and pushing Container Image
         run: |
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          docker build secure-api-gateway-ob-uk-rcs-server/docker/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
+          docker build secure-api-gateway-ob-uk-rcs-server/docker/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} secure-api-gateway-ob-uk-rcs-server
           docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
           docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}
