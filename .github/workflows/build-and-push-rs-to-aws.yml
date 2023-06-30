@@ -1,5 +1,5 @@
-name: build and push vanila rcs image to aws ecr
-run-name: Building remote consent service:'${{ inputs.release_version_number }}' 
+name: build and push vanila resource server image to aws ecr
+run-name: Building resource server:'${{ inputs.release_version_number }}' 
 
 on:
   workflow_call:
