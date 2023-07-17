@@ -1,4 +1,4 @@
-name: build and push vanila sapig image to aws ecr
+name: build and push vanila sapig image to google cloud registry
 run-name: Building sapig:'${{ inputs.release_version_number }}' 
 
 on:
