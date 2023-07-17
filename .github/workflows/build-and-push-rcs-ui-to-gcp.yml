@@ -73,7 +73,7 @@ jobs:
         run: |
 
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          cd secure-api-gateway-ob-uk-ui-rcs/projects/rcs
-          docker build -f docker/Dockerfile -t ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
+          cd secure-api-gateway-ob-uk-ui-rcs
+          docker build -f projects/rcsdocker/Dockerfile -t ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
           docker tag ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
           docker push --all-tags ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}
