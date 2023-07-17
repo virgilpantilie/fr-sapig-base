@@ -83,7 +83,7 @@ jobs:
       - name: Set up docker auth
         id: gcloud_docker_auth
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker europe-west4-docker.pkg.dev
       
       - name: Setting build configuration for the image
         run: bin/config.sh --env dev --igmode development init  # Add variables here
