@@ -54,12 +54,6 @@ jobs:
         with:
           repository: ${{ inputs.repository_url }}
           ref: ${{ inputs.release_ref }}
-
-      - name: Prepare nodejs for build
-        uses: 'actions/setup-node@v3'
-        with:
-          node-version: 14
-      # Java version and maven settings with protected repository id
         
       - uses: 'google-github-actions/auth@v1.1.1'
         id: gcloud_auth
