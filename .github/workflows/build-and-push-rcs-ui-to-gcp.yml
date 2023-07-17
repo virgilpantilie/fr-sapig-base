@@ -56,7 +56,7 @@ jobs:
           ref: ${{ inputs.release_ref }}
 
       - name: Prepare nodejs for build
-        uses: actions/setup-node@v3ECR_REGISTRY/fo
+        uses: 'actions/setup-node@v3'
         with:
           node-version: 14
       # Java version and maven settings with protected repository id
