@@ -56,25 +56,30 @@ jobs:
           ref: ${{ inputs.release_ref }}
 
       - name: Prepare nodejs for build
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3ECR_REGISTRY/fo
         with:
           node-version: 14
       # Java version and maven settings with protected repository id
         
-      - name: Building node modules
-        run: mvn clean install -DskipTests -DskipITs -s settings.xml 
-          
-      - name: Login to registry
-        run: | 
-          export AWS_ACCESS_KEY_ID=${{ secrets.ECR_CREDENTIALS_ACCESS_KEY }}
-          export AWS_SECRET_ACCESS_KEY=${{ secrets.ECR_CREDENTIALS_SECRET_KEY }}
-          aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+      - uses: 'google-github-actions/auth@v1.1.1'
+        id: gcloud_auth
+        with:
+          credentials_json: ${{ secrets.GCR_CREDENTIALS_JSON }}
+
+      - name: Set up Cloud SDK
+        id: gcloud_sdk
+        uses: 'google-github-actions/setup-gcloud@v1.1.1'
+
+      - name: Set up docker auth
+        id: gcloud_docker_auth
+        run: |
+          gcloud auth configure-docker europe-west4-docker.pkg.dev
     
       - name: Building and pushing Container Image
         run: |
 
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          cd secure-api-gateway-ob-uk-rs-server # needs a variable?
-          docker build -f docker/Dockerfile --build-arg JAR_FILE=$(find  -maxdepth 2 -regex .*\.jar) -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
-          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
-          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}
+          cd secure-api-gateway-ob-uk-ui-rcs/projects/rcs
+          docker build -f docker/Dockerfile -t ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
+          docker tag ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
+          docker push --all-tags ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}
