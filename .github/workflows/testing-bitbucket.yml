@@ -50,7 +50,12 @@ jobs:
 
       # https://github.com/actions/checkout
 
-
+      - name: Checkout 
+        run: |
+          git clone -c http.extraHeader='Authorization: Bearer ${{ secrets.STASH_TOKEN }}' ${{ secrets.EXTERNAL_REPO_URL }} . 
+      
+          
+      # This action must be setup after checkout since it expects to detect a pom.xml    
       - name: Prepare JDK and Maven for build
         uses: actions/setup-java@v3
         with:
@@ -59,9 +64,7 @@ jobs:
           architecture: x64
           cache: 'maven'  
 
-      - name: Checkout 
-        run: |
-          git clone -c http.extraHeader='Authorization: Bearer ${{ secrets.STASH_TOKEN }}' ${{ secrets.EXTERNAL_REPO_URL }} . 
+
       # Java version and maven settings with protected repository id
       
       - name: Pulling and configuring forgerock maven settings
