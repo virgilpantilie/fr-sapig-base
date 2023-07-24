@@ -49,16 +49,7 @@ jobs:
     steps:
 
       # https://github.com/actions/checkout
-      - name: checkout release tag
-        run: |
-          ls -la 
-          pwd 
-          #git clone https://${{ secrets.STASH_USER }}:${{ secrets.STASH_TOKEN }}@stash.forgerock.org/scm/sapig-lbg-tf/sapig-lbg-test-facility-bank.git
-        # uses: actions/checkout@v3
-        # with:
-        #   repository: ${{ inputs.repository_url }}
-        #   ref: ${{ inputs.release_ref }}
-        #   token: ${{ secrets.STASH_TOKEN }}
+
 
       - name: Prepare JDK and Maven for build
         uses: actions/setup-java@v3
@@ -68,6 +59,9 @@ jobs:
           architecture: x64
           cache: 'maven'  
 
+      - name: Checkout 
+        run: |
+          git clone -c http.extraHeader='Authorization: Bearer ${{ secrets.STASH_TOKEN }}' ${{ secrets.EXTERNAL_REPO_URL }} . 
       # Java version and maven settings with protected repository id
       
       - name: Pulling and configuring forgerock maven settings
