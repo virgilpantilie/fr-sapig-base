@@ -50,11 +50,13 @@ jobs:
 
       # https://github.com/actions/checkout
       - name: checkout release tag
-        uses: actions/checkout@v3
-        with:
-          repository: ${{ inputs.repository_url }}
-          ref: ${{ inputs.release_ref }}
-          token: ${{ secrets.STASH_TOKEN }}
+        run: 
+          git status
+        # uses: actions/checkout@v3
+        # with:
+        #   repository: ${{ inputs.repository_url }}
+        #   ref: ${{ inputs.release_ref }}
+        #   token: ${{ secrets.STASH_TOKEN }}
 
       - name: Prepare JDK and Maven for build
         uses: actions/setup-java@v3
