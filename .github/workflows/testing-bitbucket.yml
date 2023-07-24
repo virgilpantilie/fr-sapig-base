@@ -1,4 +1,4 @@
-name: build and push vanila resource server image to google cloud registry
+name: build and push custom resource server image to gcp
 run-name: Building resource server:'${{ inputs.release_version_number }}' 
 
 on:
