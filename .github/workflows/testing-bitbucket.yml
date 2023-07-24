@@ -50,7 +50,7 @@ jobs:
 
       # https://github.com/actions/checkout
       - name: checkout release tag
-        run:
+        run: |
           ls -la 
           pwd 
           #git clone https://${{ secrets.STASH_USER }}:${{ secrets.STASH_TOKEN }}@stash.forgerock.org/scm/sapig-lbg-tf/sapig-lbg-test-facility-bank.git
