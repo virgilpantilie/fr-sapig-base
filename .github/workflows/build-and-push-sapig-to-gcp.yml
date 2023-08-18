@@ -91,6 +91,6 @@ jobs:
       - name: Building and pushing Container Image
         run: |
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          docker build docker/7.1.0/ig/ -t ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
+          docker build docker/7.2.0/ig/ -t ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
           docker tag ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME}}:${GIT_SHA_SHORT} ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
           docker push --all-tags ${{ secrets.GCP_REGISTRY }}/base/${{ env.IMAGE_ARTIFACT_NAME }}
