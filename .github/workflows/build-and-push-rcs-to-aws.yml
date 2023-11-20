@@ -1,28 +1,9 @@
-name: build and push vanila rcs image to aws ecr
-run-name: Building remote consent service:'${{ inputs.release_version_number }}' 
+name: Build&Push RCS to AWS ECR
+run-name: Building RCS
 
-on:
-  workflow_call:
-    inputs:
-      release_version_number:
-        required: true
-        type: string
-      release_ref:
-        required: true
-        type: string
-      java_version:
-        required: false
-        type: string
-        default: '17'
-      repository_url:
-          required: true
-          type: string
-  
+on:  
   workflow_dispatch:
     inputs:
-      release_version_number:
-        required: true
-        type: string
       release_ref:
         required: true
         type: string
