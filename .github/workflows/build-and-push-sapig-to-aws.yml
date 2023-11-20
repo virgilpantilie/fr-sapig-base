@@ -2,34 +2,16 @@ name: build and push vanila sapig image to aws ecr
 run-name: Building sapig:'${{ inputs.release_version_number }}' 
 
 on:
-  workflow_call:
-    inputs:
-      release_version_number:
-        required: true
-        type: string
-      release_ref:
-        required: true
-        type: string
-      java_version:
-        required: false
-        type: string
-        default: '17'
-      repository_url:
-        required: true
-        type: string
-  
   workflow_dispatch:
     inputs:
       repository_url:
         required: true
         type: string
         default: 'SecureApiGateway/secure-api-gateway-ob-uk'
-      release_version_number:
-        required: true
-        type: string
       release_ref:
         required: true
         type: string
+        default: '2.1.0'
       java_version:
         required: false
         type: string
@@ -83,6 +65,5 @@ jobs:
       - name: Building and pushing Container Image
         run: |
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
-          docker build docker/7.1.0/ig/ -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
-          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME}}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
-          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}
+          docker build docker/7.2.0/ig/ -t ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT}
+          docker push --all-tags ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}
