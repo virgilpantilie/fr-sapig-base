@@ -64,5 +64,5 @@ jobs:
         run: |
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
           cd secure-api-gateway-ob-uk-rs-server
-          docker build -f docker/Dockerfile --build-arg JAR_FILE=$(find -maxdepth 2 -regex .*\.jar) -t ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
+          docker build -f docker/Dockerfile --build-arg JAR_FILE=$(find -maxdepth 2 -regex .*\.jar) -t ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}:latest .
           docker push --all-tags ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}
