@@ -48,7 +48,7 @@ jobs:
       
       - name: Pulling and configuring forgerock maven settings
         run: | 
-          curl -u '${{ secrets.FORGEROCK_USER }}:${{ secrets.FORGEROCK_PASSWORD }}' https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml  
+          curl -u "${{ secrets.FORGEROCK_USER }}":"${{ secrets.FORGEROCK_PASSWORD }}" https://maven.forgerock.org/artifactory/private-releases/settings.xml > settings.xml  
         
       - name: Building Jar
         run: mvn clean install -s settings.xml 
