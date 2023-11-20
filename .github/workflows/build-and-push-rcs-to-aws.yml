@@ -7,6 +7,7 @@ on:
       release_ref:
         required: true
         type: string
+        default: 'v2.1.0'
       java_version:
         required: false
         type: string
@@ -64,6 +65,5 @@ jobs:
 
           export GIT_SHA_SHORT=$(git rev-parse --short HEAD)
           cd secure-api-gateway-ob-uk-rcs-server
-          docker build -f docker/Dockerfile --build-arg JAR_FILE=$(find  -maxdepth 2 -regex .*\.jar) -t ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
-          docker tag ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}:latest 
+          docker build -f docker/Dockerfile --build-arg JAR_FILE=$(find  -maxdepth 2 -regex .*\.jar) -t ${{ secrets.ECR_REGISTRY }}/${{ env.IMAGE_ARTIFACT_NAME }}:${GIT_SHA_SHORT} .
           docker push --all-tags ${{ secrets.ECR_REGISTRY }}/forgerock/base/${{ env.IMAGE_ARTIFACT_NAME }}
